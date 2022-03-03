@@ -4,9 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.RadioButton
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 
 
@@ -31,49 +29,50 @@ class MainActivity : AppCompatActivity() {
         val text: String = userText.text.toString()
         val res = text.intOrString()
         val check : Boolean = " " in text
-
-    /*
-        else {
-            intent = Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "${text}"))
-            startActivity(intent)
-        }*/
+        if(!browserButton.isChecked && !phoneButton.isChecked && !geolocationButton.isChecked && text.isEmpty())
+        {
+            Toast.makeText(applicationContext, "Строка пустая, RadioButton не выбран:(", Toast.LENGTH_SHORT).show()
+            return@OnClickListener
+        }
 
         if(browserButton.isChecked && text.isEmpty()){
             val url = "https://istu.edu"
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(url)
             startActivity(i)
+            cleanAll()
         }
         else if(geolocationButton.isChecked && text.isEmpty()){
             val i = Intent(Intent.ACTION_VIEW)
             val uri = "geo:52.262697,104.261906"
             i.data = Uri.parse(uri)
             startActivity(i)
+            cleanAll()
         }
-      else  if(phoneButton.isChecked && text.isEmpty()){
-            intent = Intent(Intent.ACTION_CALL, Uri.parse("tel:11111"))
+        else  if(phoneButton.isChecked && text.isEmpty()){
+            intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:+11111"))
             startActivity(intent)
+            cleanAll()
+        }
+        else if(res){
+            intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + "${text}"))
+            startActivity(intent)
+            cleanAll()
         }
         else if(!res && !check){
             val url = "https://${text}"
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(url)
             startActivity(i)
+            cleanAll()
         }
         else{
             val i = Intent(Intent.ACTION_VIEW)
             val uri = "geo:${text}"
             i.data = Uri.parse(uri)
             startActivity(i)
+            cleanAll()
         }
-
-
-        /*   else{
-               val i = Intent(Intent.ACTION_VIEW)
-               val uri = "geo:${text}"
-               i.data = Uri.parse(uri)
-               startActivity(i)
-           }*/
     }
 
     fun String.intOrString(): Boolean {
@@ -82,6 +81,13 @@ class MainActivity : AppCompatActivity() {
             null -> false
             else -> true
         }
+    }
+
+    private fun cleanAll(){
+        geolocationButton.isChecked = false
+        phoneButton.isChecked = false
+        browserButton.isChecked = false
+        userText.setText("")
     }
 
     private fun init(){
