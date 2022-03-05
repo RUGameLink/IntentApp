@@ -25,9 +25,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private var magicListener: View.OnClickListener = View.OnClickListener {
-        var intent: Intent
+        var i: Intent
         val text: String = userText.text.toString()
-        val res = text.intOrString()
+        val res = text.longOrString()
         val check : Boolean = " " in text
         if(!browserButton.isChecked && !phoneButton.isChecked && !geolocationButton.isChecked && text.isEmpty())
         {
@@ -43,20 +43,20 @@ class MainActivity : AppCompatActivity() {
             cleanAll()
         }
         else if(geolocationButton.isChecked && text.isEmpty()){
-            val i = Intent(Intent.ACTION_VIEW)
+            i = Intent(Intent.ACTION_VIEW)
             val uri = "geo:52.262697,104.261906"
             i.data = Uri.parse(uri)
             startActivity(i)
             cleanAll()
         }
         else  if(phoneButton.isChecked && text.isEmpty()){
-            intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:+11111"))
-            startActivity(intent)
+            i = Intent(Intent.ACTION_DIAL, Uri.parse("tel:+11111"))
+            startActivity(i)
             cleanAll()
         }
         else if(res){
-            intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + "${text}"))
-            startActivity(intent)
+            i = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + "${text}"))
+            startActivity(i)
             cleanAll()
         }
         else if(!res && !check){
@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
             cleanAll()
         }
         else{
-            val i = Intent(Intent.ACTION_VIEW)
+            i = Intent(Intent.ACTION_VIEW)
             val uri = "geo:${text}"
             i.data = Uri.parse(uri)
             startActivity(i)
@@ -75,8 +75,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun String.intOrString(): Boolean {
-        val v = toIntOrNull()
+    private fun String.longOrString(): Boolean {
+        val v = toLongOrNull()
         return when(v) {
             null -> false
             else -> true
